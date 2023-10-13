@@ -20,5 +20,21 @@ def about(station, date):
             'date': date,
             'temperature': (temperature)}
 
+@app.route("/api/v1/<station>/")
+def station(station):
+    filename = 'TG_STAID' + str(station).zfill(6) + '.txt'
+    df = pd.read_csv(f'data_small/{filename}', skiprows=20, parse_dates=['    DATE'])
+    return df.to_dict(orient='records')
+
+@app.route("/api/v1/yearly/<station>/<year>")
+def yearly(station,year):
+    filename = 'TG_STAID' + str(station).zfill(6) + '.txt'
+    df = pd.read_csv(f'data_small/{filename}', skiprows=20)
+    df['    DATE'] = df['    DATE'].astype(str)
+    results = df[df['    DATE'].str.startswith(str(year))]
+    return results.to_dict(orient='records')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
