@@ -3,9 +3,13 @@ import pandas as pd
 
 app = Flask(__name__)
 
+stations = pd.read_csv('data_small/stations.txt', skiprows=17)
+stations = stations[['STAID','STANAME                                 ']]
+
 @app.route("/")
 def home():
-    return render_template('home.html')
+    # .to_html() produces raw html. safe keyword in home.html renders the data in tabular format
+    return render_template('home.html', data=stations.to_html())
 
 @app.route("/api/v1/<station>/<date>")
 def about(station, date):
